@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  sql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - 1433:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=!23qweASD
+  connect.ui:
+    image: ${DOCKER_REGISTRY-}connectui
+    build:
+      context: .
+      dockerfile: Connect.UI/Dockerfile
+    depends_on:
+      - "sql"
