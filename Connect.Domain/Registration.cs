@@ -1,6 +1,8 @@
-﻿namespace Connect.Domain
+﻿using Microsoft.Azure.Cosmos.Table;
+
+namespace Connect.Domain
 {
-    public class Registration
+    public class Registration : TableEntity
     {
         public int Id { get; set; }
         public string Email { get; set; } = string.Empty;

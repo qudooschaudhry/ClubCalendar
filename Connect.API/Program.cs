@@ -1,7 +1,8 @@
 using Connect.Infrastructure.DataContext;
 using Microsoft.EntityFrameworkCore;
 using MediatR;
-
+using Connect.Infrastructure.Repositories;
+using Connect.Infrastructure.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,10 +12,17 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddMediatR(typeof(Connect.ApplicationService.Queries.GetClubsQueryHandler).Assembly, typeof(Connect.ApplicationService.Queries.GetClubsQueryHandler).Assembly);
+builder.Services.AddMediatR(typeof(Program));
 
-var connectionString = builder.Configuration.GetConnectionString("Connect");
-builder.Services.AddDbContext<ConnectContext>(opt => opt.UseSqlServer(connectionString));
+
+ConfigurationManager configuration = builder.Configuration;
+IWebHostEnvironment environment = builder.Environment;
+
+builder.Services.Configure<ApplicationSettings>(builder.Configuration.GetSection("AppSettings"));
+builder.Services.AddSingleton<IApplicationSettings, ApplicationSettingsAdapter>();
+
+builder.Services.AddScoped<IClubRepository, ClubRepository>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
 
 var app = builder.Build();
 

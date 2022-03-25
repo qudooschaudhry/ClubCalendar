@@ -1,6 +1,8 @@
-﻿namespace Connect.Domain
+﻿using Microsoft.Azure.Cosmos.Table;
+
+namespace Connect.Domain
 {
-    public class Event
+    public class Event : TableEntity
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
