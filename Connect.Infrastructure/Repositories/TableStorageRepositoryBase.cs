@@ -12,50 +12,19 @@ namespace Connect.Infrastructure.Repositories
 
     public interface ITableStorageRepository<T>
     {
-        /// <summary>
-        /// Adds a new entity to table storage
-        /// </summary>
-        /// <param name="correlationId">The correlation Id of the request</param>
-        /// <param name="entity">The table storage entity</param>
-        Task AddAsync(Guid correlationId, T entity);
+        Task AddAsync(Guid correlationId, T entity, CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Saves an existing entity to table storage
-        /// </summary>
-        /// <param name="correlationId">The correlation Id of the request</param>
-        /// <param name="entity">The table storage entity</param>
-        Task SaveAsync(Guid correlationId, T entity);
+        Task SaveAsync(Guid correlationId, T entity, CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Deletes the entity
-        /// </summary>
-        /// <param name="correlationId">The correlation Id of the request</param>
-        /// <param name="entity">The table storage entity</param>
-        Task DeleteAsync(Guid correlationId, T entity);
+        Task DeleteAsync(Guid correlationId, T entity, CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Gets the entity from Table Storage
-        /// </summary>
-        /// <param name="correlationId">The correlation Id of the request</param>
-        /// <param name="partitionKey">The Partition Key of the entity</param>
-        /// <param name="rowKey">The Row key of the entity</param>
-        /// <returns>Entity</returns>
-        Task<T> GetAsync(Guid correlationId, string partitionKey, string rowKey);
+        Task<T> GetAsync(Guid correlationId, string partitionKey, string rowKey, CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Gets all the entities of a type
-        /// </summary>
-        /// <param name="correlationId">The correlation Id of the request</param>
-        /// <returns></returns>
-        Task<IEnumerable<T>> GetAllAsync(Guid correlationId);
+        Task<IEnumerable<T>> GetAllAsync(Guid correlationId, CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Gets all the entities of a type in a partition
-        /// </summary>
-        /// <param name="correlationId">The correlatin Id of the request</param>
-        /// <param name="partitionKey">The partition key</param>
-        /// <returns></returns>
-        Task<IEnumerable<T>> GetAllAsync(Guid correlationId, string partitionKey, string startRowKey, string endRowKey);
+        Task<IEnumerable<T>> GetAllAsync(Guid correlationId, string partitionKey, CancellationToken cancellationToken);
+
+        Task<IEnumerable<T>> GetAllAsync(Guid correlationId, string partitionKey, string startRowKey, string endRowKey, CancellationToken cancellationToken);
     }
 
     public abstract class TableStorageRepositoryBase<T> : ITableStorageRepository<T>
@@ -83,13 +52,13 @@ namespace Connect.Infrastructure.Repositories
             _tableInstance.CreateIfNotExists();
         }
 
-        public async Task AddAsync(Guid correlationId, T entity)
+        public async Task AddAsync(Guid correlationId, T entity, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"{correlationId} - Adding entity to table storage");
             try
             {
                 TableOperation insertOperation = TableOperation.InsertOrMerge(entity);
-                await _tableInstance.ExecuteAsync(insertOperation);
+                await _tableInstance.ExecuteAsync(insertOperation, cancellationToken);
                 _logger.LogInformation($"{correlationId} - Successfully added table storage entity");
             }
             catch (Exception ex)
@@ -99,24 +68,25 @@ namespace Connect.Infrastructure.Repositories
             }
         }
 
-        public async Task SaveAsync(Guid correlationId, T entity)
+        public async Task SaveAsync(Guid correlationId, T entity, CancellationToken cancellationToken)
         {
             TableOperation mergeOpertion = TableOperation.Merge(entity);
-            await _tableInstance.ExecuteAsync(mergeOpertion);
+            await _tableInstance.ExecuteAsync(mergeOpertion, cancellationToken);
         }
 
-        public Task DeleteAsync(Guid correlationId, T entity)
+        public Task DeleteAsync(Guid correlationId, T entity, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(Guid correlationId)
+        public async Task<IEnumerable<T>> GetAllAsync(Guid correlationId, CancellationToken cancellationToken)
         {
             TableContinuationToken? token = null;
             var entities = new List<T>();
+
             do
             {
-                var queryResult = await _tableInstance.ExecuteQuerySegmentedAsync(new TableQuery<T>(), token);
+                var queryResult = await _tableInstance.ExecuteQuerySegmentedAsync(new TableQuery<T>(), token, cancellationToken);
                 entities.AddRange(queryResult.Results);
                 token = queryResult.ContinuationToken;
             } while (token != null);
@@ -124,7 +94,23 @@ namespace Connect.Infrastructure.Repositories
             return entities;
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(Guid correlationId, string partitionKey, string startRowKey, string endRowKey)
+        public async Task<IEnumerable<T>> GetAllAsync(Guid correlationId, string partitionKey, CancellationToken cancellationToken)
+        {
+            TableContinuationToken? token = null;
+            var entities = new List<T>();
+            do
+            {
+                string pkFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionKey);
+
+                var queryResult = await _tableInstance.ExecuteQuerySegmentedAsync(new TableQuery<T>().Where(pkFilter), token, cancellationToken);
+                entities.AddRange(queryResult.Results);
+                token = queryResult.ContinuationToken;
+            } while (token != null);
+
+            return entities;
+        }
+
+        public async Task<IEnumerable<T>> GetAllAsync(Guid correlationId, string partitionKey, string startRowKey, string endRowKey, CancellationToken cancellationToken)
         {
             TableContinuationToken? token = null;
             var entities = new List<T>();
@@ -138,7 +124,7 @@ namespace Connect.Infrastructure.Repositories
                 string combinedRowKeyFilter = TableQuery.CombineFilters(rkLowerFilter, TableOperators.And, rkUpperFilter);
                 string combinedFilter = TableQuery.CombineFilters(pkFilter, TableOperators.And, combinedRowKeyFilter);
 
-                var queryResult = await _tableInstance.ExecuteQuerySegmentedAsync(new TableQuery<T>().Where(combinedFilter), token);
+                var queryResult = await _tableInstance.ExecuteQuerySegmentedAsync(new TableQuery<T>().Where(combinedFilter), token, cancellationToken);
                 entities.AddRange(queryResult.Results);
                 token = queryResult.ContinuationToken;
             } while (token != null);
@@ -146,14 +132,14 @@ namespace Connect.Infrastructure.Repositories
             return entities;
         }
 
-        public async Task<T> GetAsync(Guid correlationId, string partitionKey, string rowKey)
+        public async Task<T> GetAsync(Guid correlationId, string partitionKey, string rowKey, CancellationToken cancellationToken)
         {
             T entity;
             _logger.LogInformation($"{correlationId} - Loading entity from table storage");
             try
             {
                 TableOperation retrieveOperation = TableOperation.Retrieve<T>(partitionKey, rowKey);
-                var result = await _tableInstance.ExecuteAsync(retrieveOperation);
+                var result = await _tableInstance.ExecuteAsync(retrieveOperation, cancellationToken);
                 entity = (T)result.Result;
             }
             catch (Exception ex)

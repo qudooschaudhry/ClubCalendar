@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using static Connect.API.Clubs.GetClubsQueryResponse;
 
 namespace Connect.API.Clubs
 {
@@ -19,17 +20,19 @@ namespace Connect.API.Clubs
         }
 
         [HttpGet]
-        public async Task<string> Get(CancellationToken cancellationToken)
+        public async Task<List<ClubDto>> Get(CancellationToken cancellationToken)
         {
-            await Task.Delay(0, cancellationToken);
+            var response = await _mediator.Send(new GetClubsQuery());
 
-            //await _mediator.Send(new AddNewClubCommand()
-            //{
-            //    Name = "Alpine Club of Canada - Ottawa Chapter",
-            //    Description = "A section of Alpine club of Canada"
-            //});
+            return response.Clubs;
+        }
 
-            return "string.e";
+        [HttpPost]
+        public async Task<Guid> Post(AddNewClubCommand command, CancellationToken cancellationToken)
+        {
+            var response = await _mediator.Send(command, cancellationToken);
+
+            return response.Id;
         }
     }
 }

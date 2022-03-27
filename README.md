@@ -1,5 +1,7 @@
 This README is written using markdown. To get markdown support [Download] (https://marketplace.visualstudio.com/items?itemName=MadsKristensen.MarkdownEditor64) the extension and install it.*
 
+https://razor.radzen.com/scheduler
+
 # Introduction
 This solution contains all source code and relevant assets for the Software Distribution Tool (SDT)
 
@@ -59,79 +61,7 @@ The solution is structured based on a variation of the [clean architecture](http
 
 The solution is composed of the following projects
 
-## MCS.SoftwareDistributor
 
-This project contains the user interface of the Software distribution tool. It follows the asp.net mvc razor pages approach to building web based applications.
-
-## MCS.SoftwareDistributor.API
-
-This project contains an option for a RESTful API which can be consumed by other consumers outside of the software distribution tool.
-
-## MCS.SoftwareDistributor.Domain
-
-This project contains the domain model of the application. It contains all business logic and we should strive to push all business logic here.
-
-## MCS.SoftwareDistributor.Infrastructure
-
-This project contains infrastructure code that provides key capabilities used by the application, but it abstracts them out so we can build an application that is loosely coupled.
-
-## MCS.SoftwareDistributor.ApplicationService
-
-This project is the glue between domain and the infrastructure. The UI calls this for running Queries and Commands.
-
-# Running the Application Locally
-
-## First time setup
-
-If this is your first time running the application, make sure you have run the pre-requisites, specifically you have a Local SQL server running as a docker image and you can connect to it through SSMS.
-
-
-1. Open the following files.sql in the following folder and run them in the order of the timestamp (or sort by modified date and run from old to new)
-
-    `~\SoftwareDistributionTool\scripts\ddl\`
-
-    The files will be of this format `20220317141508_InitialCreate.sql`
-
-2. Run the local seed script located in \scripts\dml\local_seed.sql
-
-Once you are setup, you can run the application by pressing F5 (or ctrl + F5). Make sure the startup project is MCS.SoftwareDistributor
-
-# Database Scripts
-
-The application uses Entity Framework code first to design the model. To show how to generate the DDL scripts, follow this example
-
-1. Let's say we want to add a new Field to the `ApplicationGroups` table called `LastModifiedBy`. Add the field in the ApplicationGroup class located under MCS.SoftwareDistributor.Domain like so
-
-    `public int LastModifiedBy { get; set; }`
-
-2. Open the Package Manager Console and run the following command to generate migrations
-
-    `Add-Migration AddedLastModifiedDateToApplicationGroups -Project MCS.SoftwareDistributor.Infrastructure -StartupProject MCS.SoftwareDistributor`
-
-    This will add the migration under the the Migrations folder
-
-    `Script-Migration -From InitialCreate -To AddedLastModifiedDateToApplicationGroups -Project MCS.SoftwareDistributor.Infrastructure -StartupProject MCS.SoftwareDistributor -Idempotent`
-
-
-    The switches represents the following
-
-    - From: The migration we want to start from
-    - To: The migration we want to  include up to
-    - Project: The project containing the data context
-    - Startup Project: the project the application starts up from
-    - Idempotent: generates a script with no side effects
-
-4. Once the script is generated, save it as a new .sql file in the following folder.  
-
-    `~SoftwareDistributionTool\scripts\ddl`
-
-    Use the migration name as the file name, for instance in our example use the generated time stamp like so <timestemp>_AddedLastModifiedDateToApplicationGroups.sql
-
-5. This generated script can be run on the DEV database and handed of the SQL review team through existing process. 
-
---
-Qudoos Chaudhry
-(613) 302-3852
 
 
 

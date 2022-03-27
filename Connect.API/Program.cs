@@ -1,5 +1,3 @@
-using Connect.Infrastructure.DataContext;
-using Microsoft.EntityFrameworkCore;
 using MediatR;
 using Connect.Infrastructure.Repositories;
 using Connect.Infrastructure.Configuration;
