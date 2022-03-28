@@ -1,6 +1,34 @@
 ﻿@page "/"
-
+@inject HttpClient Http
 <PageTitle>Calendar</PageTitle>
 
-<MudText Typo="Typo.h3" GutterBottom="true">ACC Calendar</MudText>
+<MudText Typo="Typo.h3">ACC Calendar</MudText>
+<MudText Typo="Typo.body1">Upcoming Events</MudText>
+<MudDataGrid Items="@Events">
+    <Columns>
+        <Column T="Event" Field="Name" Title="Name" />
+        <Column T="Event" Field="StartDate" Title="Date" />
+        <Column T="Event" Field="GroupSize" Title="Group Size" />
+        <Column T="Event" Field="SpacesLeft" Title="Spaces Left" />
+        <Column T="Event" Field="Cost" />
+    </Columns>
+</MudDataGrid>
 
+@code{
+    private Event[] Events;
+    protected override async Task OnInitializedAsync()
+    {
+        Events = await Http.GetFromJsonAsync<Event[]>("clubs/events/635bf54c-e5ba-4d79-808c-da7a982ec396");
+    }
+
+    public class Event
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public DateTimeOffset StartDate        { get; set; }
+        public DateTimeOffset EndDate { get; set; }
+        public int GroupSize { get; set; }
+        public int SpacesLeft { get; set; }
+        public decimal Cost { get; set; }
+    }
+}

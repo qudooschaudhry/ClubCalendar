@@ -22,6 +22,17 @@ builder.Services.AddSingleton<IApplicationSettings, ApplicationSettingsAdapter>(
 builder.Services.AddScoped<IClubRepository, ClubRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowOrigins",
+                      builder =>
+                      {
+                          builder.WithOrigins("https://localhost:44398",
+                                              "http://www.contoso.com");
+                      });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -32,7 +43,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors("AllowOrigins");
 app.UseAuthorization();
 
 app.MapControllers();
