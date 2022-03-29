@@ -39,30 +39,10 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2022 - Connect.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script>
-        $(document).ready(function() {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-            //plugins: [ interactionPlugin, dayGridPlugin ],
-                themeSystem: 'bootstrap5',
-                initialView: 'dayGridMonth',
-                selectable: true,
-                dateClick: function(info) {
-                    alert('Clicked on: ' + info.dateStr);
-                    // change the day's background color just for fun
-                }
-            });
-        calendar.render();
-      });
-    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -3,7 +3,7 @@ using Connect.Domain.Extensions;
 using Connect.Infrastructure.Repositories;
 using MediatR;
 
-namespace Connect.Web.Pages.Events
+namespace Connect.Web.Events
 {
     public class AddNewEventCommand : IRequest<AddNewEventCommandResponse>
     {

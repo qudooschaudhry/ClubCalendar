@@ -2,7 +2,8 @@
 using Connect.Infrastructure.Repositories;
 using MediatR;
 
-namespace Connect.Web.Pages.Events
+namespace Connect.Web.Events
+
 {
     public class GetEventsByClubQuery : IRequest<GetEventsByClubQueryResponse>
     {
@@ -15,10 +16,9 @@ namespace Connect.Web.Pages.Events
         public List<EventDto> Events { get; set; } = new List<EventDto>();
         public record EventDto(
             Guid Id,
-            string Name,
-            string Description,
-            DateTimeOffset StartDate,
-            DateTimeOffset EndDate,
+            string Title,
+            DateTimeOffset Start,
+            DateTimeOffset End,
             int GroupSize,
             decimal Cost)
         {
@@ -49,7 +49,6 @@ namespace Connect.Web.Pages.Events
                 new GetEventsByClubQueryResponse.EventDto(
                     e.RowKey.StringToGuidKey(),
                     e.Name,
-                    e.Description,
                     e.StartDate.Date,
                     e.EndDate.Date,
                     e.GroupSize,
