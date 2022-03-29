@@ -17,10 +17,16 @@ namespace Connect.Web.Events
         public record EventDto(
             Guid Id,
             string Title,
+            ExtendedProperties ExtendedProps,
             DateTimeOffset Start,
-            DateTimeOffset End,
-            int GroupSize,
-            decimal Cost)
+            DateTimeOffset End)
+        {
+        }
+
+        public record ExtendedProperties (
+            string Description, 
+            int groupSize, 
+            decimal cost)
         {
         }
     }
@@ -49,10 +55,12 @@ namespace Connect.Web.Events
                 new GetEventsByClubQueryResponse.EventDto(
                     e.RowKey.StringToGuidKey(),
                     e.Name,
+                    new GetEventsByClubQueryResponse.ExtendedProperties(
+                        e.Description,
+                        e.GroupSize,
+                        e.Cost),
                     e.StartDate.Date,
-                    e.EndDate.Date,
-                    e.GroupSize,
-                    e.Cost)).ToList()
+                    e.EndDate.Date)).ToList()
             };
 
         }

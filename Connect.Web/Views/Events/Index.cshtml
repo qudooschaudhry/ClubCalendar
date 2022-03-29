@@ -6,26 +6,31 @@
 <div id="calendar">
 </div>
 
-<div class="modal" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p>Modal body text goes here.</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary">Save changes</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
+
+<div id="calendarModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 id="modalTitle" class="modal-title"></h5>
+        </div>
+        <div class="modal-body">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-4">When:</div>
+                    <div class="col-md-8 ml-auto"><p id="when"></p></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">Description:</div>
+                    <div class="col-md-8 ml-auto"><p id="description"></p></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Register</button>
+        </div>
     </div>
   </div>
 </div>
-
 
 @section Scripts {
     <script>
@@ -36,26 +41,32 @@
                 initialView: 'dayGridMonth',
                 selectable: true,
                 dateClick: function(info) {
-                    alert('Clicked on: ' + info.dateStr);
+                    console.log('Clicked on: ' + info.dateStr);
                     // change the day's background color just for fun
                 },
                 eventClick: function(info) {
-                    alert('Event: ' + info.event.title);
-                    alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
-                    alert('View: ' + info.view.type);
-
-                    // change the border color just for fun
-                    info.el.style.borderColor = 'red';
+                    console.log (info.event.extendedProps.description);
+                    $('#modalTitle').html(info.event.title);
+                    $('#when').html(info.event.start);
+                    $('#description').html(info.event.extendedProps.description);
+                    //$('#eventUrl').attr('href',infoevent.url);
+                    $('#calendarModal').modal('show');
                 },
-                eventSources: [
-                    {
-                        url: '/events/getclubevents',
-                        color: 'blue'
-                    }
-                ],
+                events: '/events/getclubevents',
+                //eventSources: [
+                //    {
+                //        url: '/events/getclubevents',
+                //        extraParams: {
+                //            custom_param1: 'description',
+                //        },
+                //        color: 'blue'
+                //    }
+                //],
                 displayEventTime: false
             });
         calendar.render();
       });
+
+
     </script>
 }
