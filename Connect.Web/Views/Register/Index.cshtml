@@ -1,0 +1,43 @@
+﻿@model Connect.Web.Registration.RegisterForEventCommand
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<form asp-action="index">
+    <div class="col-4">
+        <div class="mb-3">
+            <label asp-for="FirstName" class="form-label"></label>
+            <input asp-for="FirstName" placeholder="First Name" class="form-control" />
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="LastName" class="form-label"></label>
+            <input asp-for="LastName" placeholder="Last Name" class="form-control" />
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label"></label>
+            <input asp-for="Email" type="email" placeholder="Last Name" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="MemberCode" class="form-label"></label>
+            <input asp-for="MemberCode" placeholder="Member Code" class="form-control" />
+            <span asp-validation-for="MemberCode" class="text-danger"></span>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">Sign  Up</button>
+        </div>
+    </div>
+</form>
+
+
+
+@section Scripts {
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+}

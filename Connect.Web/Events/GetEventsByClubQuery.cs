@@ -1,4 +1,5 @@
 ﻿using Connect.Domain.Extensions;
+using Connect.Infrastructure.Extensions;
 using Connect.Infrastructure.Repositories;
 using MediatR;
 
@@ -40,8 +41,8 @@ namespace Connect.Web.Events
             ILogger<GetEventsByClubQueryHandler> logger,
             IEventRepository eventRepository)
         {
-            _logger = logger;
-            _eventRepository = eventRepository;
+            _logger = logger.ThrowIfNull(nameof(logger));
+            _eventRepository = eventRepository.ThrowIfNull(nameof(eventRepository));
         }
 
 

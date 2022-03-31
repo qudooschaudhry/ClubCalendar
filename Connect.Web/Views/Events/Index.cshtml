@@ -26,7 +26,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-primary">Register</button>
+            <a id="eventUrl" class="btn btn-primary">Sign up!</a>
         </div>
     </div>
   </div>
@@ -49,7 +49,7 @@
                     $('#modalTitle').html(info.event.title);
                     $('#when').html(info.event.start);
                     $('#description').html(info.event.extendedProps.description);
-                    //$('#eventUrl').attr('href',infoevent.url);
+                    $('#eventUrl').attr('href',"/register/" + info.event.id);
                     $('#calendarModal').modal('show');
                 },
                 events: '/events/getclubevents',

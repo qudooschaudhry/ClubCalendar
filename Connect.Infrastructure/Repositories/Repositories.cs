@@ -6,6 +6,7 @@
 using Connect.Domain;
 using Microsoft.Extensions.Logging;
 using Connect.Infrastructure.Configuration;
+
 namespace Connect.Infrastructure.Repositories
 {
 	public partial interface IClubRepository : ITableStorageRepository<Club> {}
@@ -27,9 +28,11 @@ namespace Connect.Infrastructure.Repositories
             : base(logger, applicationSettings, "Events")
         {
         }
-	}	
-	public partial interface IRegistrationRepository : ITableStorageRepository<Registration> {}
-	public partial class RegistrationRepository : TableStorageRepositoryBase<Registration>, IRegistrationRepository 
+	}
+    public partial interface IRegistrationRepository : ITableStorageRepository<Registration>
+    {
+    }
+    public partial class RegistrationRepository : TableStorageRepositoryBase<Registration>, IRegistrationRepository 
 	{
 		public RegistrationRepository(
             IApplicationSettings applicationSettings, 

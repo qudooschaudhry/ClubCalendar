@@ -1,5 +1,6 @@
 ﻿using Connect.Domain;
 using Connect.Domain.Extensions;
+using Connect.Infrastructure.Extensions;
 using Connect.Infrastructure.Repositories;
 using MediatR;
 
@@ -31,8 +32,8 @@ namespace Connect.Web.Events
             ILogger<AddNewEventCommandHandler> logger,
             IEventRepository eventRepository)
         {
-            _logger = logger;
-            _eventRepository = eventRepository ?? throw new ArgumentNullException(nameof(eventRepository));
+            _logger = logger.ThrowIfNull(nameof(logger));
+            _eventRepository = eventRepository.ThrowIfNull(nameof(eventRepository));
         }
 
         public async Task<AddNewEventCommandResponse> Handle(AddNewEventCommand request, CancellationToken cancellationToken)

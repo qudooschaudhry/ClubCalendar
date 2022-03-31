@@ -16,8 +16,9 @@ namespace Connect.Web.Events
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
+            await Task.Delay(0, cancellationToken);
             return View();
         }
 
@@ -31,7 +32,7 @@ namespace Connect.Web.Events
             return new JsonResult(response.Events);
         }
 
-        public IActionResult Test()
+        public IActionResult Register()
         {
             return View();
         }
