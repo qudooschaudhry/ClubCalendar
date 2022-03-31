@@ -26,6 +26,7 @@
             </div>
         </div>
         <div class="modal-footer">
+            @*<a id="eventUrl" class="btn btn-secondary">Wait List</a>*@
             <a id="eventUrl" class="btn btn-primary">Sign up!</a>
         </div>
     </div>
@@ -45,7 +46,6 @@
                     // change the day's background color just for fun
                 },
                 eventClick: function(info) {
-                    console.log (info.event.extendedProps.description);
                     $('#modalTitle').html(info.event.title);
                     $('#when').html(info.event.start);
                     $('#description').html(info.event.extendedProps.description);

@@ -33,7 +33,13 @@ namespace Connect.Web.Registration
 
             await _mediator.Send(command, cancellationToken);
 
-            return View(command);
+            return RedirectToAction("success", "register");
+        }
+
+        [HttpGet("/register/success")]
+        public async Task<IActionResult> Success()
+        {
+            return View();
         }
     }
 

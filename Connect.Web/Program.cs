@@ -17,6 +17,7 @@ builder.Services.AddSingleton<IApplicationSettings, ApplicationSettingsAdapter>(
 
 builder.Services.AddScoped<IClubRepository, ClubRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IRegistrationRepository, RegistrationRepository>();
 
 var app = builder.Build();
 
